@@ -134,6 +134,9 @@ AStarPather.GetPath = function(fromx, fromy, tox, toy)
 	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
 		return null;
 
+	if (GameWorld.nodes[tox][toy] === 1)
+		return null;
+
 	//return null if the points are at the same location
 	if (fromx === tox && fromy === toy) 
 		return null;

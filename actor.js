@@ -110,14 +110,17 @@ Actor.prototype.Draw = function()
 
 Actor.prototype.SetTarget = function(target)
 {
-	this.target.Clone(target);
-	this.gridTarget = GameWorld.WorldToGrid(this.target);
-	this.gridPosition = GameWorld.WorldToGrid(this.position);
+	var gtarget = GameWorld.WorldToGrid(target);
 
-	this.path = AStarPather.GetPath(this.gridPosition.x, this.gridPosition.y, this.gridTarget.x, this.gridTarget.y);
+	var newpath = AStarPather.GetPath(this.gridPosition.x, this.gridPosition.y, gtarget.x, gtarget.y);
 
-	if (this.path && this.path.length > 0)
+	if (newpath != null && newpath.length > 0)
 	{
+		this.path = newpath;
+
+		this.target.Clone(target);
+		this.gridTarget = GameWorld.WorldToGrid(this.target);
+
 		this.behavior = ActorBehavior.WALK;
 		this.currentTarget = GameWorld.GridToWorld(new Vec2(this.path[0].x, this.path[0].y));
 	}
