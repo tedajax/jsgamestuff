@@ -88,7 +88,8 @@ AStarPather.ManDistance = function(fromx, fromy, tox, toy)
 	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
 		return 0;
 
-	return (Math.abs(fromy - toy) * 10 + Math.abs(fromx - tox) * 10);
+	//return (Math.abs(fromy - toy) * 10 + Math.abs(fromx - tox) * 10);
+	return (fromy - toy) * (fromy - toy) + (fromx - tox) * (fromx - tox);
 };
 
 AStarPather.MinFScore = function()

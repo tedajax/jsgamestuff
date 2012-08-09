@@ -37,10 +37,12 @@ function Initialize()
 
     pathfound = AStarPather.GetPath(fromx, fromy, tox, toy);
 
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 100; i++)
     {
         actors.push(new Actor());
-        actors[i].position = new Vec2(100, 100 + i * 50);
+        var x = Math.randomrange(GameWorld.nodeSize / 2, canvas.width - GameWorld.nodeSize / 2);
+        var y = Math.randomrange(GameWorld.nodeSize / 2, canvas.height - GameWorld.nodeSize / 2);
+        actors[i].position = new Vec2(x, y);
     }
 
     setInterval(Tick, 1000 / FPS);
