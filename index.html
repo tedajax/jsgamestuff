@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>RTS</title>
+        <script type="text/javascript" src="util.js"></script>
+        <script type="text/javascript" src="time.js"></script>
+        <script type="text/javascript" src="input.js"></script>
+        <script type="text/javascript" src="vec2.js"></script>
+        <script type="text/javascript" src="matrix.js"></script>
+        <script type="text/javascript" src="rectangle.js"></script>
+        
+        <script type="text/javascript" src="transform.js"></script>
+        
+        <script type="text/javascript" src="panel.js"></script>
+        
+        <!--GameObjects-->
+        <script type="text/javascript" src="gameobject.js"></script>
+        <script type="text/javascript" src="actor.js"></script>
+        <script type="text/javascript" src="projectile.js"></script>
+        <script type="text/javascript" src="player.js"></script>
+        <script type="text/javascript" src="obstacle.js"></script>
+        <!--End Game Objects-->
+
+        <script type="text/javascript" src="projectilemanager.js"></script>
+
+        <script type="text/javascript" src="gameworld.js"></script>
+
+        <script type="text/javascript" src="AStarPather.js"></script>
+        
+        <script type="text/javascript" src="selectionbox.js"></script>
+
+        <script type="text/javascript" src="jsshooty.js"></script>
+        <style type="text/css">
+            body
+            {
+                font-family: Arial,Helvetica,sans-serif;
+                background-color: rgb(200, 200, 200);
+            }
+            
+            #canvas
+            {
+                border: 1px solid #000000
+            }
+        </style>
+    </head>
+    <body>
+        <div align="center">
+            <canvas id="canvas" width="960" height="600" oncontextmenu="return false;"></canvas>
+            
+            <br />
+            Controls:<br />
+            &nbsp;Left Click - Click and drag to select circles<br />
+            &nbsp;Right Click - Move selected circles to clicked location<br />
+        </div>
+    </body>
+</html>
