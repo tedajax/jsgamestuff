@@ -12,6 +12,8 @@ function Actor()
 {
 	this.GameObject();	
 
+	this.transform.SetParent(root);
+
 	this.behavior = ActorBehavior.IDLE;
 
 	this.path = [];
@@ -23,20 +25,20 @@ function Actor()
 	this.target = new Vec2(0, 0); //overall target that we generate a path to
 	this.gridTarget = new Vec2(0, 0); //the target in grid coordinates
 
-	this.position = Vec2.ZERO;
+	this.transform.position = Vec2.ZERO;
 	this.gridPosition = new Vec2(0, 0); //the position in grid coordinates
 
 	this.selected = false;
 
-	this.bounds = new Rectangle(this.position.x - GameWorld.nodeSize / 2, 
-								this.position.y - GameWorld.nodeSize / 2,
+	this.bounds = new Rectangle(this.transform.position.x - GameWorld.nodeSize / 2, 
+								this.transform.position.y - GameWorld.nodeSize / 2,
 								GameWorld.nodeSize, 
 								GameWorld.nodeSize);
 };
 
 Actor.prototype.Update = function()
 {
-	this.gridPosition = GameWorld.WorldToGrid(this.position);
+	this.gridPosition = GameWorld.WorldToGrid(this.transform.position);
 
 	if (this.selected && Input.GetMouseButtonDown(MouseButton.RIGHT))
 		this.SetTarget(new Vec2(Input.GetMouseX(), Input.GetMouseY()));
@@ -53,8 +55,8 @@ Actor.prototype.Update = function()
 			break;
 	}
 
-	this.bounds.x = this.position.x - GameWorld.nodeSize / 2;
-	this.bounds.y = this.position.y - GameWorld.nodeSize / 2;
+	this.bounds.x = this.transform.position.x - GameWorld.nodeSize / 2;
+	this.bounds.y = this.transform.position.y - GameWorld.nodeSize / 2;
 
 	///////////   TEMPORARY CODE   ///////////////
 	for (var i = 0, len = actors.length; i < len; i++)
@@ -65,23 +67,25 @@ Actor.prototype.Update = function()
 		{
 			if (actor.bounds.ContainsRect(this.bounds))
 			{
-				var dir = Vec2.Sub(actor.position, this.position).Normalized();
-				actor.position.Add(Vec2.Mul(dir, 1));
+				var dir = Vec2.Sub(actor.transform.position, this.transform.position).Normalized();
+				actor.transform.position.Add(Vec2.Mul(dir, 1));
 
-				actor.bounds.x = this.position.x - GameWorld.nodeSize / 2;
-				actor.bounds.y = this.position.y - GameWorld.nodeSize / 2;
+				actor.bounds.x = this.transform.position.x - GameWorld.nodeSize / 2;
+				actor.bounds.y = this.transform.position.y - GameWorld.nodeSize / 2;
 			}
 		}
 	}
 	//////////   END TEMPORARY CODE   ////////////
+
+	this.transform.BuildMatrix();
 };
 
 Actor.prototype.MoveToTarget = function()
 {
-	this.direction = Vec2.Sub(this.currentTarget, this.position).Normalized()
-	this.position.Add(this.direction.Mul(200).Mul(Time.Delta()));
+	this.direction = Vec2.Sub(this.currentTarget, this.transform.position).Normalized()
+	this.transform.position.Add(this.direction.Mul(200).Mul(Time.Delta()));
 
-	if (Vec2.Distance(this.position, this.currentTarget) <= this.targetThresholdRadius)
+	if (Vec2.Distance(this.transform.position, this.currentTarget) <= this.targetThresholdRadius)
 	{
 		this.path.remove(0, 0);
 		if (this.path.length > 0)
@@ -93,10 +97,15 @@ Actor.prototype.MoveToTarget = function()
 
 Actor.prototype.Draw = function()
 {
-	context.fillStyle = "rgba(255, 0, 0, 1)";	
+	context.save();
+	this.transform.TransformContext(context);
+
 	context.beginPath();
-    context.arc(this.position.x, this.position.y, GameWorld.nodeSize / 2, 0, 2 * Math.PI, false);
+    context.arc(0, 0, GameWorld.nodeSize / 2, 0, 2 * Math.PI, false);
+    context.fillStyle = "rgba(255, 0, 0, 1)";	
     context.fill();
+
+    context.restore();
 
     if (this.selected)
     {

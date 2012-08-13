@@ -1,0 +1,4 @@
+function CollisionHandler()
+{
+	CollisionHandler.objects = [];
+};

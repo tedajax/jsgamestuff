@@ -50,7 +50,11 @@ GameWorld.WorldToGrid = function(vec)
 	if (bx >= GameWorld.cellWidth) bx = GameWorld.cellWidth - 1;
 
 	if (by < 0) by = 0;
-	if (by >= GameWorld.cellheight) by = GameWorld.cellHeight - 1;
+	if (by >= GameWorld.cellheight - 1)
+	{
+		by = GameWorld.cellHeight - 2;
+		console.log("poop");
+	}
 
 	return new Vec2(bx, by);
 };
