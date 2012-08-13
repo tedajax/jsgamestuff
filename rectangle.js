@@ -48,8 +48,6 @@ Rectangle.prototype.BotRight = function()
 
 Rectangle.prototype.DistToRect = function(rect)
 {
-	//TODO: cache the sides instead of making the function calls to calculate the side locations
-
 	L = 0, R = 1, T = 2, B = 3;
 	TL = 0, TR = 1, BL = 2, BR = 3;
 

@@ -120,7 +120,48 @@ Vec2.prototype.Set = function(x, y)
     this.y = y;
 };
 
+Vec2.prototype.Negate = function()
+{
+    this.x = -x;
+    this.y = -y;
+};
+
+Vec2.Negate = function(vec)
+{
+    return new Vec2(-vec.x, -vec.y);
+};
+
+Vec2.prototype.Dot = function(vec)
+{
+    return this.x * vec.x + this.y * vec.y;
+};
+
+Vec2.Dot = function(v1, v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+};
+
+Vec2.prototype.Midpoint = function()
+{
+    return new Vec2(this.x / 2, this.y / 2);
+};
+
+Vec2.Midpoint = function(vec)
+{
+    return new Vec2(vec.x / 2, vec.y / 2);
+};
+
+Vec2.prototype.Perpendicular = function()
+{
+    return new Vec2(-this.y, this.x);
+};
+
+Vec2.Perpendicular = function(vec)
+{
+    return new Vec2(-vec.y, vec.x);
+};
+
 Vec2.ZERO = new Vec2(0.0, 0.0);
 Vec2.ONE = new Vec2(1.0, 1.0);
 Vec2.UNIT_X = new Vec2(1.0, 0.0);
-Vec2.UNITY_Y = new Vec2(0.0, 1.0);
+Vec2.UNIT_Y = new Vec2(0.0, 1.0);

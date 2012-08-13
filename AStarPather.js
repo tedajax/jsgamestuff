@@ -173,7 +173,7 @@ AStarPather.GetPath = function(fromx, fromy, tox, toy, func)
 	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
 		return null;
 
-	if (GameWorld.nodes[tox][toy] === 1)
+	if (GameWorld.nodes[tox][toy])
 		return null;
 
 	//return null if the points are at the same location
@@ -227,7 +227,7 @@ AStarPather.ProcessNode = function(node, depth)
 	{
 		for (var j = node.y - 1; j <= node.y + 1; j++)
 		{
-			if (AStarPather.ValidCell(i, j) && GameWorld.nodes[i][j] == 0)
+			if (AStarPather.ValidCell(i, j) && GameWorld.nodes[i][j] === 0)
 			{
 				if (!AStarPather.HasDiagnolBlocker(node.x, node.y, i, j))
 				{

@@ -1,8 +1,5 @@
 const FPS = 60;
 
-var canvas = null;
-var context = null;
-
 window.onload = Initialize;
 
 var player = null;
@@ -18,16 +15,13 @@ var selectBox;
 
 var actors = [];
 
-var camera;
-
 var distFuncs = [AStarPather.ManDistance, AStarPather.DistanceSquared, AStarPather.Distance, AStarPather.ApproxFastDistance];
 var distFuncIndex = 0;
 
 function Initialize()
 {    
-    canvas = document.getElementById("canvas");
-    context = canvas.getContext("2d");
-    
+    Game.Init();
+
     player = new Player();
     player.Initialize();
 
@@ -42,15 +36,16 @@ function Initialize()
 
     pathfound = AStarPather.GetPath(fromx, fromy, tox, toy);
 
-    for (var i = 0; i < 100; i++)
+    for (var i = -20; i < 20; i++)
     {
         actors.push(new Actor());
-        var x = Math.randomrange(GameWorld.nodeSize / 2, canvas.width - GameWorld.nodeSize / 2);
-        var y = Math.randomrange(GameWorld.nodeSize / 2, canvas.height - GameWorld.nodeSize / 2);
-        actors[i].transform.position = new Vec2(x, y);
+        //var margin = GameWorld.nodeSize / 2;
+        //var x = Math.randomrange(-GameWorld.offset.x + margin, 2 * GameWorld.offset.x - margin);
+        //var y = Math.randomrange(-GameWorld.offset.y + margin, 2 * GameWorld.offset.y - margin);
+        var x = i * GameWorld.nodeSize * 2;
+        var y = 0;
+        actors[i + 20].transform.position = new Vec2(x, y);
     }
-
-    camera = new Camera();
 
     setInterval(Tick, 1000 / FPS);
 };
@@ -127,22 +122,37 @@ function Update()
     for (var i = 0, len = actors.length; i < len; i++)
         actors[i].Update();
 
-    camera.transform.position.x += 1;
-
     selectBox.Update();
-    
+
+    var cameraSpeed = 500;
+    if (Input.GetKey(Keys.D))
+        Game.camera.Move(Vec2.Mul(Vec2.UNIT_X, cameraSpeed * Time.Delta()));
+    if (Input.GetKey(Keys.A))
+        Game.camera.Move(Vec2.Mul(Vec2.UNIT_X, -cameraSpeed * Time.Delta()));
+    if (Input.GetKey(Keys.S))
+        Game.camera.Move(Vec2.Mul(Vec2.UNIT_Y, cameraSpeed * Time.Delta()));
+    if (Input.GetKey(Keys.W))
+        Game.camera.Move(Vec2.Mul(Vec2.UNIT_Y, -cameraSpeed * Time.Delta()));
+
+    Game.camera.Update();
+
     Input.Update();
 };
 
 function Draw()
 {  
-    context.save();
+    Game.context.fillStyle = "rgba(255, 255, 255, 1)";
+    Game.context.fillRect(0, 0, canvas.width, canvas.height);
 
-    camera.ApplyTransform();
+    Game.context.save();
 
-    context.fillStyle = "rgba(255, 255, 255, 1)";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    Game.camera.ApplyTransform();
     GameWorld.Draw();
+
+    for (var i = 0, len = actors.length; i < len; i++)
+        if (actors[i].selected)
+            actors[i].DrawOccupiedNodes();
+
     // AStarPather.DebugDraw();
 
     // if (pathfound != null && pathfound.length > 0)
@@ -167,4 +177,6 @@ function Draw()
     ProjectileManager.Draw();
 
     selectBox.Draw();
+
+    Game.context.restore();
 };

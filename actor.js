@@ -41,7 +41,7 @@ Actor.prototype.Update = function()
 	this.gridPosition = GameWorld.WorldToGrid(this.transform.position);
 
 	if (this.selected && Input.GetMouseButtonDown(MouseButton.RIGHT))
-		this.SetTarget(new Vec2(Input.GetMouseX(), Input.GetMouseY()));
+		this.SetTarget(new Vec2(Input.GetWorldMouseX(), Input.GetWorldMouseY()));
 
 	switch (this.behavior)
 	{
@@ -97,23 +97,23 @@ Actor.prototype.MoveToTarget = function()
 
 Actor.prototype.Draw = function()
 {
-	context.save();
-	this.transform.TransformContext(context);
+	Game.context.save();
+	this.transform.TransformContext(Game.context);
 
-	context.beginPath();
-    context.arc(0, 0, GameWorld.nodeSize / 2, 0, 2 * Math.PI, false);
-    context.fillStyle = "rgba(255, 0, 0, 1)";	
-    context.fill();
+	Game.context.beginPath();
+    Game.context.arc(0, 0, GameWorld.nodeSize / 2, 0, 2 * Math.PI, false);
+    Game.context.fillStyle = "rgba(255, 0, 0, 1)";	
+    Game.context.fill();
 
-    context.restore();
+    Game.context.restore();
 
     if (this.selected)
     {
-	    context.beginPath();
-	    context.rect(this.bounds.Left(), this.bounds.Top(), this.bounds.Right() - this.bounds.Left(), this.bounds.Bottom() - this.bounds.Top());
-	    context.lineWidth = 1;
-	    context.strokeStyle = "rgba(0, 255, 0, 1)";
-	    context.stroke();
+	    Game.context.beginPath();
+	    Game.context.rect(this.bounds.Left(), this.bounds.Top(), this.bounds.Right() - this.bounds.Left(), this.bounds.Bottom() - this.bounds.Top());
+	    Game.context.lineWidth = 1;
+	    Game.context.strokeStyle = "rgba(0, 255, 0, 1)";
+	    Game.context.stroke();
 	}
 };
 
@@ -133,4 +133,35 @@ Actor.prototype.SetTarget = function(target)
 		this.behavior = ActorBehavior.WALK;
 		this.currentTarget = GameWorld.GridToWorld(new Vec2(this.path[0].x, this.path[0].y));
 	}
+};
+
+Actor.prototype.DrawOccupiedNodes = function()
+{
+	nodes = this.GetOccupiedNodes();
+
+	Game.context.fillStyle = "rgb(0, 0, 255)";
+	for (var i = 0, len = nodes.length; i < len; i++)
+	{
+		pos = GameWorld.GridToWorld(nodes[i]);
+		
+		Game.context.fillRect(pos.x - GameWorld.nodeSize / 2, pos.y - GameWorld.nodeSize / 2, GameWorld.nodeSize, GameWorld.nodeSize);
+		
+	}
+};
+
+Actor.prototype.GetOccupiedNodes = function()
+{
+	result = [];
+
+	tl = GameWorld.WorldToGrid(Vec2.Add(this.bounds.TopLeft(), Vec2.ONE));
+	tr = GameWorld.WorldToGrid(Vec2.Add(this.bounds.TopRight(), new Vec2(-1, 1)));
+	bl = GameWorld.WorldToGrid(Vec2.Add(this.bounds.BotLeft(), new Vec2(1, -1)));
+	br = GameWorld.WorldToGrid(Vec2.Sub(this.bounds.BotRight(), Vec2.ONE));
+
+	result.push(tl);
+	if (!result.contains(tr)) result.push(tr);
+	if (!result.contains(bl)) result.push(bl);
+	if (!result.contains(br)) result.push(br);
+
+	return result;	
 };

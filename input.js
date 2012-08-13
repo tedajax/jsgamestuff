@@ -95,8 +95,8 @@ Input.OnKeyUp = function(event)
 
 Input.OnMouseDown = function(event)
 {
-    // var x = event.clientX - canvas.offsetLeft;
-    // var y = event.clientY - canvas.offsetTop;
+    // var x = event.clientX - Game.canvas.offsetLeft;
+    // var y = event.clientY - Game.canvas.offsetTop;
 
     // console.log(x + " " + y);
 
@@ -122,8 +122,8 @@ Input.OnMouseUp = function(event)
 
 Input.OnMouseMove = function(event)
 {
-    var x = event.clientX - canvas.offsetLeft;
-    var y = event.clientY - canvas.offsetTop;
+    var x = event.clientX - Game.canvas.offsetLeft;
+    var y = event.clientY - Game.canvas.offsetTop;
 
     Input.newMouse.x = x;
     Input.newMouse.y = y;
@@ -173,6 +173,16 @@ Input.GetMouseX = function()
 Input.GetMouseY = function()
 {
     return Input.newMouse.y;
+};
+
+Input.GetWorldMouseX = function()
+{
+    return Input.newMouse.x - Game.camera.transform.position.x;
+};
+
+Input.GetWorldMouseY = function()
+{
+    return Input.newMouse.y - Game.camera.transform.position.y;
 };
 
 Keys();
