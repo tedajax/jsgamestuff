@@ -50,8 +50,11 @@ Rectangle.prototype.DistToRect = function(rect)
 {
 	//TODO: cache the sides instead of making the function calls to calculate the side locations
 
+	L = 0, R = 1, T = 2, B = 3;
 	TL = 0, TR = 1, BL = 2, BR = 3;
 
+	r1sides = [this.Left(), this.Right(), this.Top(), this.Bottom()];
+	r2sides = [rect.Left(), rect.Right(), rect.Top(), rect.Bottom()];
 	r1verts = [this.TopLeft(), this.TopRight(), this.BotLeft(), this.BotRight()];
 	r2verts = [rect.TopLeft(), rect.TopRight(), rect.BotLeft(), rect.BotRight()];
 
@@ -66,10 +69,10 @@ Rectangle.prototype.DistToRect = function(rect)
 	else if (vertsInRect === 4 || (vertsInRect === 0 && rect.ContainsWholeRect(this)))
 	{
 		var dists = [];
-		dists[0] = Math.abs(this.Left() - rect.Left());
-		dists[1] = Math.abs(this.Right() - rect.Right());
-		dists[2] = Math.abs(this.Top() - rect.Top());
-		dists[3] = Math.abs(this.Bottom() - rect.Bottom());
+		dists[0] = Math.abs(r1sides[L] - r2sides[L]);
+		dists[1] = Math.abs(r1sides[R] - r2sides[R]);
+		dists[2] = Math.abs(r1sides[T] - r2sides[T]);
+		dists[3] = Math.abs(r1sides[B] - r2sides[B]);
 
 		var min = 999999;
 		for (var i = 0; i < 4; i++)
@@ -78,39 +81,38 @@ Rectangle.prototype.DistToRect = function(rect)
 		return min;
 	}
 
-	//TODO: this condition is totally wrong
-	if (rect.Top() <= this.Top() && rect.Bottom() >= this.Bottom())
+	if (r2sides[T] <= r1sides[T] && r2sides[B] >= r1sides[B])
 	{
-		if (rect.Right() <= this.Right() && rect.Right() >= this.Left())
+		if (r2sides[R] <= r1sides[R] && r2sides[R] >= r1sides[L])
 			return 0;
-		if (rect.Left() <= this.Right() && rect.Left() >= this.Left())
+		if (r2sides[L] <= r1sides[R] && r2sides[L] >= r1sides[L])
 			return 0;
 	}
-	else if (rect.Right() >= this.Right() && rect.Left() <= this.Left())
+	else if (r2sides[R] >= r1sides[R] && r2sides[L] <= r1sides[L])
 	{
-		if (rect.Top() >= this.Top() && rect.Top() <= this.Bottom())
+		if (r2sides[T] >= r1sides[T] && r2sides[T] <= r1sides[B])
 			return 0;
-		if (rect.Bottom() >= this.Top() && rect.Bottom() <= this.Bottom())
+		if (r2sides[B] >= r1sides[T] && r2sides[B] <= r1sides[B])
 			return 0;
 	}
 
-	if (rect.Right() < this.Left())
+	if (r2sides[R] < r1sides[L])
 	{
-		if (rect.Bottom() < this.Top())
+		if (r2sides[B] < r1sides[T])
 			return Vec2.Distance(r1verts[TL], r2verts[BR]);
-		else if (rect.Top() > this.Bottom())
+		else if (r2sides[T] > r1sides[B])
 			return Vec2.Distance(r1verts[BL], r2verts[TR]);
 		else
-			return Math.abs(this.Left() - rect.Right());
+			return Math.abs(r1sides[L] - r2sides[R]);
 	}
-	if (rect.Left() > this.Right())
+	if (r2sides[L] > r1sides[R])
 	{
-		if (rect.Bottom() < this.Top())
+		if (r2sides[B] < r1sides[T])
 			return Vec2.Distance(r1verts[TR], r2verts[BL]);
-		else if (rect.Top() > this.Bottom())
+		else if (r2sides[T] > r1sides[B])
 			return Vec2.Distance(r1verts[BR], r2verts[TL]);
 		else
-			return Math.abs(this.Right() - rect.Left());	
+			return Math.abs(r1sides[R] - r2sides[L]);	
 	}
 };
 
