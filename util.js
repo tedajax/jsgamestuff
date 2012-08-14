@@ -31,6 +31,14 @@ Util.CreateInheritance = function(descendant, parent)
     }
 };
 
+Util.WrapAngle = function(angle)
+{
+    result = angle;
+    while (result < 0) result += Math.PI * 2;
+    while (result > Math.PI * 2) result -= Math.PI * 2;
+    return result;
+};
+
 if (Math.randomrange == undefined)
 {
     Math.randomrange = function(min, max)

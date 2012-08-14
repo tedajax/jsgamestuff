@@ -21,11 +21,11 @@ function GameWorld()
 		}
 	}
 
-	for (var i = 0; i < 100; i++)
+	for (var i = 0; i < 1000; i++)
 	{
 		var x = Math.randomrange(0, GameWorld.cellWidth - 1);
 		var y = Math.randomrange(0, GameWorld.cellHeight - 1);
-		GameWorld.nodes[x][y] = 2;
+		GameWorld.nodes[x][y] = 1;
 	}
 
 	for (var i = Math.floor(GameWorld.cellHeight / 2) - 5; i < Math.floor(GameWorld.cellHeight / 2) + 5; i++)

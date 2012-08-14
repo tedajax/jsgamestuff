@@ -149,9 +149,9 @@ function Draw()
     Game.camera.ApplyTransform();
     GameWorld.Draw();
 
-    for (var i = 0, len = actors.length; i < len; i++)
-        if (actors[i].selected)
-            actors[i].DrawOccupiedNodes();
+    // for (var i = 0, len = actors.length; i < len; i++)
+    //     if (actors[i].selected)
+    //         actors[i].DrawOccupiedNodes();
 
     // AStarPather.DebugDraw();
 

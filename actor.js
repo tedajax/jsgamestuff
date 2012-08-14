@@ -25,6 +25,8 @@ function Actor()
 	this.target = new Vec2(0, 0); //overall target that we generate a path to
 	this.gridTarget = new Vec2(0, 0); //the target in grid coordinates
 
+	this.targetRotation = 0;
+
 	this.transform.position = Vec2.ZERO;
 	this.gridPosition = new Vec2(0, 0); //the position in grid coordinates
 
@@ -34,6 +36,8 @@ function Actor()
 								this.transform.position.y - GameWorld.nodeSize / 2,
 								GameWorld.nodeSize, 
 								GameWorld.nodeSize);
+
+	this.speed = 100;
 };
 
 Actor.prototype.Update = function()
@@ -82,17 +86,55 @@ Actor.prototype.Update = function()
 
 Actor.prototype.MoveToTarget = function()
 {
-	this.direction = Vec2.Sub(this.currentTarget, this.transform.position).Normalized()
-	this.transform.position.Add(this.direction.Mul(200).Mul(Time.Delta()));
+	// this.direction = Vec2.Sub(this.currentTarget, this.transform.position).Normalized()
+	// this.transform.position.Add(this.direction.Mul(200).Mul(Time.Delta()));
+
+	// if (Vec2.Distance(this.transform.position, this.currentTarget) <= this.targetThresholdRadius)
+	// {
+	// 	this.path.remove(0, 0);
+	// 	if (this.path.length > 0)
+	// 		this.currentTarget = GameWorld.GridToWorld(new Vec2(this.path[0].x, this.path[0].y));
+	// 	else
+	// 		this.behavior = ActorBehavior.IDLE;
+	// }
+
+
+	this.transform.rotation = Util.WrapAngle(this.transform.rotation);
+
+	rotspeed = 50;
+
+	if (Util.WrapAngle(Math.abs(this.transform.rotation - this.targetRotation)) > Math.PI)
+	{
+		if (this.targetRotation < this.transform.rotation)
+			this.transform.rotation += rotspeed * Time.Delta();
+		if (this.targetRotation > this.transform.rotation)
+			this.transform.rotation -= rotspeed * Time.Delta();	
+	}
+	else
+	{
+		if (this.targetRotation > this.transform.rotation)
+			this.transform.rotation += rotspeed * Time.Delta();
+		if (this.targetRotation < this.transform.rotation)
+			this.transform.rotation -= rotspeed * Time.Delta();
+	}
+	
+
+	this.direction = Vec2.GetDirectionFromRotation(this.transform.rotation);
+	this.transform.position.Add(this.direction.Mul(this.speed).Mul(Time.Delta()));
+
+	this.targetRotation = Math.atan2(this.currentTarget.y - this.transform.position.y,
+								 	 this.currentTarget.x - this.transform.position.x) + Math.PI * 2;
 
 	if (Vec2.Distance(this.transform.position, this.currentTarget) <= this.targetThresholdRadius)
 	{
 		this.path.remove(0, 0);
 		if (this.path.length > 0)
+		{
 			this.currentTarget = GameWorld.GridToWorld(new Vec2(this.path[0].x, this.path[0].y));
+		}
 		else
 			this.behavior = ActorBehavior.IDLE;
-	}
+	}	
 };
 
 Actor.prototype.Draw = function()
@@ -132,6 +174,9 @@ Actor.prototype.SetTarget = function(target)
 
 		this.behavior = ActorBehavior.WALK;
 		this.currentTarget = GameWorld.GridToWorld(new Vec2(this.path[0].x, this.path[0].y));
+
+		this.targetRotation = Math.atan2(this.currentTarget.y - this.transform.position.y,
+										 this.currentTarget.x - this.transform.position.x);
 	}
 };
 

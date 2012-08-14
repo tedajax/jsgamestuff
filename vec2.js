@@ -161,6 +161,11 @@ Vec2.Perpendicular = function(vec)
     return new Vec2(-vec.y, vec.x);
 };
 
+Vec2.GetDirectionFromRotation = function(rotation)
+{
+    return new Vec2(Math.cos(rotation), Math.sin(rotation));
+};
+
 Vec2.ZERO = new Vec2(0.0, 0.0);
 Vec2.ONE = new Vec2(1.0, 1.0);
 Vec2.UNIT_X = new Vec2(1.0, 0.0);
