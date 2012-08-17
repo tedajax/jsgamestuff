@@ -18,6 +18,32 @@ function Transform(parent)
     }
 };
 
+Transform.prototype.LocalToWorld = function(local)
+{
+    if (!local) local = this.position;
+
+    transformStack = new Array();
+    stackCount = 0;
+    slider = this.parent;
+    while (slider != null)
+    {
+        transformStack[stackCount++] = slider;
+        slider = slider.parent;
+    }
+    
+    Matrix3 matrix = Matrix3.IDENTITY.Clone();
+
+    for (var i = transformStack.length - 1; i >= 0; i--)
+    {
+        var t = transformStack[i];
+        matrix.Mul(t.BuildMatrix());
+    } 
+
+    matrix.Mul(Matrix3.CreateTranslation(local));
+
+    return new Vec2(matrix.m[0][2], matrix.m[1][2]);
+};
+
 Transform.prototype.SetParent = function(parent)
 {
     if (this.parent != null)

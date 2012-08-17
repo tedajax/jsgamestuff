@@ -31,6 +31,24 @@ Util.CreateInheritance = function(descendant, parent)
     }
 };
 
+Util.GetFileString = function(url)
+{
+    var request;
+
+    if (window.XMLHttpRequest)
+    {
+        request = new XMLHttpRequest();
+    }
+    else
+    {
+        request = ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    request.open("GET", url, false);
+    request.send();
+    return request.responseText;
+};
+
 Util.WrapAngle = function(angle)
 {
     result = angle;
