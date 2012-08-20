@@ -1,6 +1,8 @@
+var gl;
+
 function GL(canvas)
 {
-	GL.ctx = canvas.getContext("experimental-webgl");
+	gl = canvas.getContext("experimental-webgl");
 
 	if (!GL.ctx)
 		alert("Failed to initialize WebGL");
@@ -11,7 +13,5 @@ function GL(canvas)
 	GL.model = Matrix.I(4);
 	GL.view = Matrix.I(4);
 	GL.projection = Matrix.I(4);
-
-	GL.modelView = Matrix.I(4);
 };
 
