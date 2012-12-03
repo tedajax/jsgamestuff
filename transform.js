@@ -31,7 +31,7 @@ Transform.prototype.LocalToWorld = function(local)
         slider = slider.parent;
     }
     
-    Matrix3 matrix = Matrix3.IDENTITY.Clone();
+    matrix = Matrix3.IDENTITY.Clone();
 
     for (var i = transformStack.length - 1; i >= 0; i--)
     {
