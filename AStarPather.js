@@ -15,7 +15,11 @@ function AStarPather()
 
 	AStarPather.Destination = new PathNode();
 
-	AStarPather.MAX_DEPTH = 500;
+	AStarPather.MAX_DEPTH = 5000;
+
+	AStarPather.CARDINAL_COST = 10;
+	AStarPather.DIAGNOL_COST = 14;
+	AStarPather.DIST_FUNC = AStarPather.ApproxFastDistance;
 };
 
 AStarPather.ValidCell = function(x, y)
@@ -83,13 +87,45 @@ AStarPather.GetAdjacentOpenNodes = function(node)
 	return adjacent;
 };
 
-AStarPather.ManDistance = function(fromx, fromy, tox, toy)
+AStarPather.ManDistance = function ManDistance(fromx, fromy, tox, toy)
 {
 	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
 		return 0;
 
-	//return (Math.abs(fromy - toy) * 10 + Math.abs(fromx - tox) * 10);
+	return (Math.abs(fromy - toy) * 10 + Math.abs(fromx - tox) * 10);
+};
+
+AStarPather.DistanceSquared = function DistanceSquared(fromx, fromy, tox, toy)
+{
+	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
+		return 0;
+
 	return (fromy - toy) * (fromy - toy) + (fromx - tox) * (fromx - tox);
+};
+
+AStarPather.Distance = function Distance(fromx, fromy, tox, toy)
+{
+	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
+		return 0;
+
+	return Math.sqrt((fromy - toy) * (fromy - toy) + (fromx - tox) * (fromx - tox));
+};
+
+AStarPather.ApproxFastDistance = function ApproxFastDistance(fromx, fromy, tox, toy)
+{
+	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
+		return 0;
+
+	var dx = Math.abs(tox - fromx);
+	var dy = Math.abs(toy - fromy);	
+	var min = Math.min(dx, dy);
+	var max = Math.max(dx, dy);
+
+	var approx = (max * 1007) + (min * 441);
+	if (max < (min << 4))
+		approx -= (max * 40);
+
+	return ((approx + 512)  >> 10) * 10;
 };
 
 AStarPather.MinFScore = function()
@@ -128,13 +164,16 @@ AStarPather.MinGScore = function()
 	return result;
 };
 
-AStarPather.GetPath = function(fromx, fromy, tox, toy)
+AStarPather.GetPath = function(fromx, fromy, tox, toy, func)
 {
+	if (func)
+		AStarPather.DIST_FUNC = func;
+
 	//validate grid coordinates
 	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
 		return null;
 
-	if (GameWorld.nodes[tox][toy] === 1)
+	if (GameWorld.nodes[tox][toy])
 		return null;
 
 	//return null if the points are at the same location
@@ -188,15 +227,16 @@ AStarPather.ProcessNode = function(node, depth)
 	{
 		for (var j = node.y - 1; j <= node.y + 1; j++)
 		{
-			if (AStarPather.ValidCell(i, j) && GameWorld.nodes[i][j] == 0)
+			if (AStarPather.ValidCell(i, j) && GameWorld.nodes[i][j] === 0)
 			{
 				if (!AStarPather.HasDiagnolBlocker(node.x, node.y, i, j))
 				{
+					//var dist = AStarPather.DIST_FUNC(i, j)
 					AStarPather.AddToOpen(new PathNode(i, j, node, 
-													  ((i == node.x || j == node.y) ? 10 : 14) + node.g, 
-													  AStarPather.ManDistance(i, j, 
-													  						  AStarPather.Destination.x, 
-													  						  AStarPather.Destination.y)));
+													  ((i == node.x || j == node.y) ? AStarPather.CARDINAL_COST : AStarPather.DIAGNOL_COST) + node.g, 
+													  AStarPather.DIST_FUNC(i, j, 
+													  						AStarPather.Destination.x, 
+													  						AStarPather.Destination.y)));
 				}
 			}
 		}
@@ -211,7 +251,7 @@ AStarPather.ProcessNode = function(node, depth)
 		if (anode.g < node.g)
 		{
 			anode.parent = node;
-			anode.g = node.g + ((anode.x == node.x || anode.y == node.y) ? 10 : 14);
+			anode.g = node.g + ((anode.x == node.x || anode.y == node.y) ? AStarPather.CARDINAL_COST : AStarPather.DIAGNOL_COST);
 			anode.f = anode.g + anode.h;
 		}
 	}
@@ -271,8 +311,11 @@ AStarPather.DebugDraw = function()
 					 GameWorld.nodeSize, GameWorld.nodeSize);
 
 	context.fillStyle = "rgba(0, 0, 0, 1)";
-	context.font = "20pt Helvetica";
-	context.fillText("Depth : " + AStarPather.MAX_DEPTH, 5, 30);
+	context.font = "16pt Helvetica";
+	context.fillText("Max Depth         : " + AStarPather.MAX_DEPTH, 5, 25);
+	context.fillText("Cardinal Cost     : " + AStarPather.CARDINAL_COST, 5, 50);
+	context.fillText("Diagnol Cost      : " + AStarPather.DIAGNOL_COST, 5, 75);
+	context.fillText("Distance Function : " + AStarPather.DIST_FUNC.name, 5, 100);
 }
 
 AStarPather();

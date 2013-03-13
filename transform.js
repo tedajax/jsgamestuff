@@ -1,4 +1,4 @@
-function Transform()
+function Transform(parent)
 {    
     this.position = new Vec2(0, 0);
     this.rotation = 0.0;
@@ -6,9 +6,42 @@ function Transform()
     
     this.matrix = new Matrix3();
     
-    this.parent = root;
-    this.children = new Array();
-    this.gameobject = null;
+    if (parent)
+    {
+        this.SetParent(parent);
+    }
+    else
+    {
+        this.parent = root;
+        this.children = new Array();
+        this.gameobject = null;
+    }
+};
+
+Transform.prototype.LocalToWorld = function(local)
+{
+    if (!local) local = this.position;
+
+    transformStack = new Array();
+    stackCount = 0;
+    slider = this.parent;
+    while (slider != null)
+    {
+        transformStack[stackCount++] = slider;
+        slider = slider.parent;
+    }
+    
+    matrix = Matrix3.IDENTITY.Clone();
+
+    for (var i = transformStack.length - 1; i >= 0; i--)
+    {
+        var t = transformStack[i];
+        matrix.Mul(t.BuildMatrix());
+    } 
+
+    matrix.Mul(Matrix3.CreateTranslation(local));
+
+    return new Vec2(matrix.m[0][2], matrix.m[1][2]);
 };
 
 Transform.prototype.SetParent = function(parent)
@@ -18,17 +51,14 @@ Transform.prototype.SetParent = function(parent)
         var index = this.parent.children.indexOf(this);
         if (index >= 0)
             this.parent.children.splice(index, 1);
-    }
-    
-    if (parent == null)
-    {
-        this.parent = root;
-        root.children.push(this);
+
+        this.parent = parent;
+        parent.children.push(this);   
     }
     else
     {
-        this.parent = parent;
-        parent.children.push(this);
+        this.parent = root;
+        root.children.push(this);
     }
 };
 

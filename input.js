@@ -1,5 +1,16 @@
 function Keys()
 {
+    Keys.ZERO = 48;
+    Keys.ONE = 49;
+    Keys.TWO = 50;
+    Keys.THREE = 51;
+    Keys.FOUR = 52;
+    Keys.FIVE = 53;
+    Keys.SIX = 54;
+    Keys.SEVEN = 55;
+    Keys.EIGHT = 56;
+    Keys.NINE = 57;
+
     Keys.A = 65;
     Keys.B = 66;
     Keys.C = 67;
@@ -74,7 +85,7 @@ function Input()
 
 Input.OnKeyDown = function(event)
 {
-    Input.newKeys[event.keyCode] = true;   
+    Input.newKeys[event.keyCode] = true;  
 };
 
 Input.OnKeyUp = function(event)
@@ -84,8 +95,8 @@ Input.OnKeyUp = function(event)
 
 Input.OnMouseDown = function(event)
 {
-    // var x = event.clientX - canvas.offsetLeft;
-    // var y = event.clientY - canvas.offsetTop;
+    // var x = event.clientX - Game.canvas.offsetLeft;
+    // var y = event.clientY - Game.canvas.offsetTop;
 
     // console.log(x + " " + y);
 
@@ -111,8 +122,8 @@ Input.OnMouseUp = function(event)
 
 Input.OnMouseMove = function(event)
 {
-    var x = event.clientX - canvas.offsetLeft;
-    var y = event.clientY - canvas.offsetTop;
+    var x = event.clientX - Game.canvas.offsetLeft;
+    var y = event.clientY - Game.canvas.offsetTop;
 
     Input.newMouse.x = x;
     Input.newMouse.y = y;
@@ -162,6 +173,16 @@ Input.GetMouseX = function()
 Input.GetMouseY = function()
 {
     return Input.newMouse.y;
+};
+
+Input.GetWorldMouseX = function()
+{
+    return Input.newMouse.x - Game.camera.transform.position.x;
+};
+
+Input.GetWorldMouseY = function()
+{
+    return Input.newMouse.y - Game.camera.transform.position.y;
 };
 
 Keys();

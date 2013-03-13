@@ -31,6 +31,32 @@ Util.CreateInheritance = function(descendant, parent)
     }
 };
 
+Util.GetFileString = function(url)
+{
+    var request;
+
+    if (window.XMLHttpRequest)
+    {
+        request = new XMLHttpRequest();
+    }
+    else
+    {
+        request = ActiveXObject("Microsoft.XMLHTTP");
+    }
+
+    request.open("GET", url, false);
+    request.send();
+    return request.responseText;
+};
+
+Util.WrapAngle = function(angle)
+{
+    result = angle;
+    while (result < 0) result += Math.PI * 2;
+    while (result > Math.PI * 2) result -= Math.PI * 2;
+    return result;
+};
+
 if (Math.randomrange == undefined)
 {
     Math.randomrange = function(min, max)
