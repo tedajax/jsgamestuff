@@ -17,9 +17,9 @@ function AStarPather()
 
 	AStarPather.MAX_DEPTH = 5000;
 
-	AStarPather.CARDINAL_COST = 10;
-	AStarPather.DIAGNOL_COST = 14;
-	AStarPather.DIST_FUNC = AStarPather.ApproxFastDistance;
+	AStarPather.CARDINAL_COST = 1;
+	AStarPather.DIAGNOL_COST = Math.sqrt(2);
+	AStarPather.DIST_FUNC = AStarPather.OctagonalDistance;
 };
 
 AStarPather.ValidCell = function(x, y)
@@ -126,6 +126,17 @@ AStarPather.ApproxFastDistance = function ApproxFastDistance(fromx, fromy, tox, 
 		approx -= (max * 40);
 
 	return ((approx + 512)  >> 10) * 10;
+};
+
+AStarPather.OctagonalDistance = function OctagonalDistance(fromx, fromy, tox, toy)
+{
+	if (!AStarPather.ValidCell(fromx, fromy) || !AStarPather.ValidCell(tox, toy))
+		return 0;
+
+	var dx = Math.abs(tox - fromx);
+	var dy = Math.abs(toy - fromy);	
+	
+	return 0.941246 * Math.max(dx, dy) + 0.41 * Math.min(dx, dy)
 };
 
 AStarPather.MinFScore = function()
