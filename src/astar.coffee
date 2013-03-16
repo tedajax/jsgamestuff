@@ -89,24 +89,20 @@ class @PathFinder
 	# Distance Functions #
 	######################
 	@distManhattan: (fromx, fromy, tox, toy, distScale) ->
-		name = "manhattan"
 		distScale = if distScale? then distScale else 1
 
 		return (Math.abs(fromx - tox) * distScale + Math.abs(fromy - toy)) * distScale
 
 	@distSq: (fromx, fromy, tox, toy, distScale) ->
-		name = "squared"
 		distScale = if distScale? then distScale else 1
 
 		return (Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2)) * distScale
 
 	@dist: (fromx, fromy, tox, toy, distScale) ->
-		name = "euclidean"
 		distScale = if distScale? then distScale else 1
 		return (Math.sqrt(Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2))) * distScale
 
 	@distFast: (fromx, fromy, tox, toy, distScale) ->
-		name = "approximation"
 		distScale = if distScale? then distScale else 1
 		dx = Math.abs(tox - fromx)
 		dy = Math.abs(toy - fromy)
@@ -120,7 +116,6 @@ class @PathFinder
 		return ((approx + 512) >> 10) * distScale
 
 	@distOctagonal: (fromx, fromy, tox, toy, distScale) ->
-		name = "octagonal"
 		distScale = if distScale? then distScale else 1
 
 		dx = Math.abs(tox - fromx)

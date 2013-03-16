@@ -120,29 +120,22 @@
     };
 
     PathFinder.distManhattan = function(fromx, fromy, tox, toy, distScale) {
-      var name;
-      name = "manhattan";
       distScale = distScale != null ? distScale : 1;
       return (Math.abs(fromx - tox) * distScale + Math.abs(fromy - toy)) * distScale;
     };
 
     PathFinder.distSq = function(fromx, fromy, tox, toy, distScale) {
-      var name;
-      name = "squared";
       distScale = distScale != null ? distScale : 1;
       return (Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2)) * distScale;
     };
 
     PathFinder.dist = function(fromx, fromy, tox, toy, distScale) {
-      var name;
-      name = "euclidean";
       distScale = distScale != null ? distScale : 1;
       return (Math.sqrt(Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2))) * distScale;
     };
 
     PathFinder.distFast = function(fromx, fromy, tox, toy, distScale) {
-      var approx, dx, dy, max, min, name;
-      name = "approximation";
+      var approx, dx, dy, max, min;
       distScale = distScale != null ? distScale : 1;
       dx = Math.abs(tox - fromx);
       dy = Math.abs(toy - fromy);
@@ -156,8 +149,7 @@
     };
 
     PathFinder.distOctagonal = function(fromx, fromy, tox, toy, distScale) {
-      var dx, dy, name;
-      name = "octagonal";
+      var dx, dy;
       distScale = distScale != null ? distScale : 1;
       dx = Math.abs(tox - fromx);
       dy = Math.abs(toy - fromy);
