@@ -15,8 +15,10 @@ var selectBox;
 
 var actors = [];
 
-var distFuncs = [AStarPather.ManDistance, AStarPather.DistanceSquared, AStarPather.Distance, AStarPather.ApproxFastDistance];
+// var distFuncs = [PathFinder.ManDistance, PathFinder.DistanceSquared, PathFinder.Distance, PathFinder.ApproxFastDistance, PathFinder.OctaganolDistance];
 var distFuncIndex = 0;
+
+var pathFinder;
 
 function Initialize()
 {    
@@ -34,7 +36,7 @@ function Initialize()
     tox = Math.floor(GameWorld.cellWidth / 2) + 5;
     toy = Math.floor(GameWorld.cellHeight / 2);
 
-    pathfound = AStarPather.GetPath(fromx, fromy, tox, toy);
+    pathFinder = new PathFinder(GameWorld.nodes, GameWorld.width, GameWorld.height);
 
     for (var i = -20; i < 20; i++)
     {

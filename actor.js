@@ -157,13 +157,36 @@ Actor.prototype.Draw = function()
 	    Game.context.strokeStyle = "rgba(0, 255, 0, 1)";
 	    Game.context.stroke();
 	}
+
+	Game.context.strokeStyle = "rgba(0, 255, 255, 1)";
+	if (this.path != null)
+	{
+		for (var i = 0, len = this.path.length; i < len; i++)
+		{
+			node = this.path[i];
+			pos = GameWorld.GridToWorld(node);
+			Game.context.beginPath();
+		    Game.context.arc(pos.x, pos.y, GameWorld.nodeSize / 6, 0, 2 * Math.PI, false);
+		    Game.context.fillStyle = "rgba(0, 0, 255, 1)";	
+		    Game.context.fill();
+
+		    if (i < len - 1)
+		    {
+		    	Game.context.beginPath();
+		    	Game.context.moveTo(pos.x, pos.y);
+		    	next = GameWorld.GridToWorld(this.path[i+1])
+		    	Game.context.lineTo(next.x, next.y);
+		    	Game.context.stroke();
+		    }
+		}
+	}
 };
 
 Actor.prototype.SetTarget = function(target)
 {
 	var gtarget = GameWorld.WorldToGrid(target);
 
-	var newpath = AStarPather.GetPath(this.gridPosition.x, this.gridPosition.y, gtarget.x, gtarget.y);
+	var newpath = pathFinder.getPath(this.gridPosition.x, this.gridPosition.y, gtarget.x, gtarget.y);
 
 	if (newpath != null && newpath.length > 0)
 	{

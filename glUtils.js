@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // augment Sylvester some
 Matrix.Translation = function (v)
 {
