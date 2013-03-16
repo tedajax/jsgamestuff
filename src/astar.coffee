@@ -8,17 +8,19 @@ class PathNode
 		@f = @g + @h
 
 class @PathFinder
-	constructor: (world, w, h) ->
+	constructor: (world, w, h, dscale) ->
 		@openlist = []
 		@closedlist = []
 		@destination = new PathNode()
 
 		@MAX_DEPTH = 500
 
-		@CARDINAL_COST = 1
-		@DIAGNOL_COST = Math.sqrt(2)
-		@DIST_SCALE = 1
+		@DIST_SCALE = if dscale? then dscale else 1
+		@CARDINAL_COST = 1 * @DIST_SCALE
+		@DIAGNOL_COST = Math.sqrt(2) * @DIST_SCALE
 		@DIST_FUNC = PathFinder.distOctagonal
+
+		PathFinder.distNames = ["euclidean", "squared", "manhattan", "fast", "octagonal"]
 
 		@world = if world? and w? and h? then world else null
 		@width = if w? then w else 0
@@ -87,20 +89,24 @@ class @PathFinder
 	# Distance Functions #
 	######################
 	@distManhattan: (fromx, fromy, tox, toy, distScale) ->
+		name = "manhattan"
 		distScale = if distScale? then distScale else 1
 
 		return (Math.abs(fromx - tox) * distScale + Math.abs(fromy - toy)) * distScale
 
 	@distSq: (fromx, fromy, tox, toy, distScale) ->
+		name = "squared"
 		distScale = if distScale? then distScale else 1
 
 		return (Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2)) * distScale
 
 	@dist: (fromx, fromy, tox, toy, distScale) ->
+		name = "euclidean"
 		distScale = if distScale? then distScale else 1
 		return (Math.sqrt(Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2))) * distScale
 
 	@distFast: (fromx, fromy, tox, toy, distScale) ->
+		name = "approximation"
 		distScale = if distScale? then distScale else 1
 		dx = Math.abs(tox - fromx)
 		dy = Math.abs(toy - fromy)
@@ -114,6 +120,7 @@ class @PathFinder
 		return ((approx + 512) >> 10) * distScale
 
 	@distOctagonal: (fromx, fromy, tox, toy, distScale) ->
+		name = "octagonal"
 		distScale = if distScale? then distScale else 1
 
 		dx = Math.abs(tox - fromx)
@@ -194,7 +201,6 @@ class @PathFinder
 			return null
 
 		if node.x == @destination.x and node.y == @destination.y
-			console.log 'got to destination'
 			return node
 
 		@addToClosed(node)
@@ -230,9 +236,22 @@ class @PathFinder
 		context.fillStyle = "rgba(255, 0, 0, 1)"
 		context.fillRect(@destination.x * nodeSize, @destination.y * nodeSize, nodeSize, nodeSize)
 
+		if @DIST_FUNC == PathFinder.dist
+			distName = "euclidean"
+		else if @DIST_FUNC == PathFinder.distSq
+			distName = "squared"
+		else if @DIST_FUNC == PathFinder.distManhattan
+			distName = "manhattan"
+		else if @DIST_FUNC == PathFinder.distFast
+			distName = "fast"
+		else if @DIST_FUNC == PathFinder.distOctagonal
+			distName = "octagonal"
+		else
+			distName = "fuck"
+
 		context.fillStyle = "rgba(0, 0, 0, 1)";
 		context.font = "14pt Lucida Console";
 		context.fillText("Max Depth         : " + @MAX_DEPTH, 5, 25);
 		context.fillText("Cardinal Cost     : " + @CARDINAL_COST, 5, 50);
 		context.fillText("Diagnol Cost      : " + @DIAGNOL_COST, 5, 75);
-		context.fillText("Distance Function : " + @DIST_FUNC.name, 5, 100);
+		context.fillText("Distance Function : " + distName, 5, 100);

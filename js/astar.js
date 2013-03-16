@@ -19,15 +19,16 @@
 
   this.PathFinder = (function() {
 
-    function PathFinder(world, w, h) {
+    function PathFinder(world, w, h, dscale) {
       this.openlist = [];
       this.closedlist = [];
       this.destination = new PathNode();
       this.MAX_DEPTH = 500;
-      this.CARDINAL_COST = 1;
-      this.DIAGNOL_COST = Math.sqrt(2);
-      this.DIST_SCALE = 1;
+      this.DIST_SCALE = dscale != null ? dscale : 1;
+      this.CARDINAL_COST = 1 * this.DIST_SCALE;
+      this.DIAGNOL_COST = Math.sqrt(2) * this.DIST_SCALE;
       this.DIST_FUNC = PathFinder.distOctagonal;
+      PathFinder.distNames = ["euclidean", "squared", "manhattan", "fast", "octagonal"];
       this.world = (world != null) && (w != null) && (h != null) ? world : null;
       this.width = w != null ? w : 0;
       this.height = h != null ? h : 0;
@@ -119,22 +120,29 @@
     };
 
     PathFinder.distManhattan = function(fromx, fromy, tox, toy, distScale) {
+      var name;
+      name = "manhattan";
       distScale = distScale != null ? distScale : 1;
       return (Math.abs(fromx - tox) * distScale + Math.abs(fromy - toy)) * distScale;
     };
 
     PathFinder.distSq = function(fromx, fromy, tox, toy, distScale) {
+      var name;
+      name = "squared";
       distScale = distScale != null ? distScale : 1;
       return (Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2)) * distScale;
     };
 
     PathFinder.dist = function(fromx, fromy, tox, toy, distScale) {
+      var name;
+      name = "euclidean";
       distScale = distScale != null ? distScale : 1;
       return (Math.sqrt(Math.pow(fromx - tox, 2) + Math.pow(fromy - toy, 2))) * distScale;
     };
 
     PathFinder.distFast = function(fromx, fromy, tox, toy, distScale) {
-      var approx, dx, dy, max, min;
+      var approx, dx, dy, max, min, name;
+      name = "approximation";
       distScale = distScale != null ? distScale : 1;
       dx = Math.abs(tox - fromx);
       dy = Math.abs(toy - fromy);
@@ -148,7 +156,8 @@
     };
 
     PathFinder.distOctagonal = function(fromx, fromy, tox, toy, distScale) {
-      var dx, dy;
+      var dx, dy, name;
+      name = "octagonal";
       distScale = distScale != null ? distScale : 1;
       dx = Math.abs(tox - fromx);
       dy = Math.abs(toy - fromy);
@@ -239,7 +248,6 @@
         return null;
       }
       if (node.x === this.destination.x && node.y === this.destination.y) {
-        console.log('got to destination');
         return node;
       }
       this.addToClosed(node);
@@ -267,7 +275,7 @@
     };
 
     PathFinder.prototype.debugDraw = function(nodeSize) {
-      var n, _i, _j, _len, _len1, _ref, _ref1;
+      var distName, n, _i, _j, _len, _len1, _ref, _ref1;
       nodeSize = nodeSize != null ? nodeSize : 20;
       context.fillStyle = "rgba(0, 200, 0, 0.5)";
       _ref = this.openlist;
@@ -283,12 +291,25 @@
       }
       context.fillStyle = "rgba(255, 0, 0, 1)";
       context.fillRect(this.destination.x * nodeSize, this.destination.y * nodeSize, nodeSize, nodeSize);
+      if (this.DIST_FUNC === PathFinder.dist) {
+        distName = "euclidean";
+      } else if (this.DIST_FUNC === PathFinder.distSq) {
+        distName = "squared";
+      } else if (this.DIST_FUNC === PathFinder.distManhattan) {
+        distName = "manhattan";
+      } else if (this.DIST_FUNC === PathFinder.distFast) {
+        distName = "fast";
+      } else if (this.DIST_FUNC === PathFinder.distOctagonal) {
+        distName = "octagonal";
+      } else {
+        distName = "fuck";
+      }
       context.fillStyle = "rgba(0, 0, 0, 1)";
       context.font = "14pt Lucida Console";
       context.fillText("Max Depth         : " + this.MAX_DEPTH, 5, 25);
       context.fillText("Cardinal Cost     : " + this.CARDINAL_COST, 5, 50);
       context.fillText("Diagnol Cost      : " + this.DIAGNOL_COST, 5, 75);
-      return context.fillText("Distance Function : " + this.DIST_FUNC.name, 5, 100);
+      return context.fillText("Distance Function : " + distName, 5, 100);
     };
 
     return PathFinder;
