@@ -218,8 +218,8 @@
           slider = slider.parent;
           result.push(slider);
         }
+        result.reverse();
       }
-      result.reverse();
       return result;
     };
 
