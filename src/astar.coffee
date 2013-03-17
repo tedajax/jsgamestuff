@@ -168,6 +168,10 @@ class @PathFinder
 		@openlist.push(node)
 
 		finalNode = @processNode(node)
+		
+		#the path can be built by traversing the parents
+		#from the last node until the parent is null
+		#reversing this array gives the path
 		result = []
 		if finalNode?
 			slider = finalNode
@@ -176,7 +180,7 @@ class @PathFinder
 				slider = slider.parent
 				result.push(slider)
 
-		result.reverse()
+			result.reverse()
 
 		return result
 
@@ -198,8 +202,13 @@ class @PathFinder
 		if node.x == @destination.x and node.y == @destination.y
 			return node
 
+		#the current node being processed needs to be closed
+		#as it has now been checked
 		@addToClosed(node)
 
+		#this searches all 8 squares around the current node
+		#and if they are not blocked, and are not already in the
+		#open or closed list they are added to the open list
 		for i in [node.x - 1..node.x + 1]
 			for j in [node.y - 1..node.y + 1]
 				if @validCell(i, j)
@@ -208,6 +217,9 @@ class @PathFinder
 						hcost = @DIST_FUNC(i, j, @destination.x, @destination.y, @DIST_SCALE)
 						@addToOpen(new PathNode(i, j, node, gcost, hcost))
 
+		#check all adjacent nodes currently in the open list
+		#if their g score is less than this node set that nodes parent
+		#to this one and recalculate the g and f scores of the node
 		adjOpenNode = @adjacentOpenNodes(node)
 		for n in adjOpenNode
 			if n.g < node.g
@@ -215,6 +227,7 @@ class @PathFinder
 				n.g = node.g + @gCost(n.x, n.y, node.x, node.y)
 				n.f = n.g + n.h
 
+		#recursively process the node in the open list with the lowest F score
 		return @processNode(@minF(), depth + 1)
 
 	debugDraw: (nodeSize) ->
