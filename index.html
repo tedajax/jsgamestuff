@@ -1,11 +1,21 @@
 <html>
     <head>
         <title>RTS</title>
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+            }
+        </style>
+        <link href="../bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <script src="http://code.jquery.com/jquery.js"></script>
+
         <script type="text/javascript" src="util.js"></script>
         <script type="text/javascript" src="time.js"></script>
         <script type="text/javascript" src="input.js"></script>
-        <script type="text/javascript" src="sylvester.js"></script>
-        <script type="text/javascript" src="glUtils.js"></script>
         <script type="text/javascript" src="vec2.js"></script>
         <script type="text/javascript" src="matrix.js"></script>
         <script type="text/javascript" src="rectangle.js"></script>
@@ -36,27 +46,65 @@
 
         <script type="text/javascript" src="jsshooty.js"></script>
         <style type="text/css">
-            body
-            {
-                font-family: Arial,Helvetica,sans-serif;
-                background-color: rgb(200, 200, 200);
-            }
             
             #canvas
             {
-                margin-top: 100px;
                 border: 1px solid #000000
             }
         </style>
     </head>
     <body>
+        <div id="topmenu"></div>
+
+        <script type="text/javascript" src="../menu.js"></script>
+        <script type="text/javascript">
+            populateTopMenu(null, "..");
+        </script>
+
         <div align="center">
-            <canvas id="canvas" width="960" height="600" oncontextmenu="return false;"></canvas>
-            
-            <br />
-            Controls:<br />
-            &nbsp;Left Click - Click and drag to select circles<br />
-            &nbsp;Right Click - Move selected circles to clicked location<br />
+            <canvas id="canvas" width="960" height="540" oncontextmenu="return false;"></canvas>
         </div>
+
+        <div class="container" style="padding-top: 20px;">
+            <div class="row-fluid" style="background: #EEEEEE">
+                <div class="span12" style="text-align: center;">
+                    <h4><b>Controls</b></h4>
+                </div>
+            </div>
+            <div class="row-fluid" style="background: #DDDDDD;">
+                <div class="span2" style="padding-left: 20px; vertical-align: middle;">
+                    Left Click
+                </div>
+                <div class="span10" style="text-align: right; padding-right: 20px;">
+                    Select circle or drag to select multiple circles.
+                </div>
+            </div>
+            <div class="row-fluid" style="background: #EEEEEE;">
+                <div class="span2" style="padding-left: 20px;">
+                    Right Click
+                </div>
+                <div class="span10" style="text-align: right; padding-right: 20px;">
+                    Direct selected circles to move to location.
+                </div>
+            </div>
+            <div class="row-fluid" style="background: #DDDDDD;">
+                <div class="span2" style="padding-left: 20px;">
+                    A/D
+                </div>
+                <div class="span10" style="text-align: right; padding-right: 20px;">
+                    Move camera left/right.
+                </div>
+            </div>
+            <div class="row-fluid" style="background: #EEEEEE;">
+                <div class="span2" style="padding-left: 20px;">
+                    W/S
+                </div>
+                <div class="span10" style="text-align: right; padding-right: 20px;">
+                    Move camera up/down.
+                </div>
+            </div>
+        </div>       
+
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
     </body>
 </html>
